@@ -25,9 +25,12 @@ export default function NavBar() {
       if (response.ok) {
         const data = await response.json()
         setUser(data.user)
+      } else {
+        setUser(null)
       }
     } catch (error) {
       console.error('Failed to fetch user:', error)
+      setUser(null)
     } finally {
       setLoading(false)
     }
