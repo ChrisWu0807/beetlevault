@@ -1,0 +1,44 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String   @id @default(cuid())
+  email         String   @unique
+  passwordHash  String   // bcrypt
+  name          String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  beetles       Beetle[]
+
+  @@map("users")
+}
+
+model Beetle {
+  id            String   @id @default(cuid())
+  ownerId       String
+  owner         User     @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  species       String
+  lineage       String?
+  emergedAt     DateTime?
+  notes         String?
+  imageUrl      String?
+  isPublished   Boolean  @default(false)
+  isForSale     Boolean  @default(false)
+  price         Int?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([ownerId, isPublished])
+  @@index([isPublished, species])
+  @@index([species])
+  @@map("beetles")
+}
