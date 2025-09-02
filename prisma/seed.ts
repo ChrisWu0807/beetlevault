@@ -42,6 +42,9 @@ async function main() {
       isPublished: true,
       isForSale: true,
       price: 500,
+      stage: 'adult',
+      gender: 'male',
+      category: 'rhinoceros',
     },
     {
       ownerId: user1.id,
@@ -51,6 +54,9 @@ async function main() {
       notes: '大顎發達，體色深黑，適合繁殖。',
       isPublished: true,
       isForSale: false,
+      stage: 'adult',
+      gender: 'female',
+      category: 'stag',
     },
     {
       ownerId: user1.id,
@@ -61,6 +67,9 @@ async function main() {
       isPublished: true,
       isForSale: true,
       price: 1200,
+      stage: 'adult',
+      gender: 'male',
+      category: 'stag',
     },
     {
       ownerId: user2.id,
@@ -71,6 +80,9 @@ async function main() {
       isPublished: true,
       isForSale: true,
       price: 2000,
+      stage: 'adult',
+      gender: 'male',
+      category: 'rhinoceros',
     },
     {
       ownerId: user2.id,
@@ -80,6 +92,9 @@ async function main() {
       notes: '小巧可愛，適合新手飼養。',
       isPublished: false,
       isForSale: false,
+      stage: 'larva',
+      larvaStage: 'L2',
+      category: 'rhinoceros',
     },
   ]
 
