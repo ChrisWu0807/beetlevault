@@ -16,7 +16,7 @@ export const beetleSchema = z.object({
   lineage: z.string().max(120, '血統描述不能超過 120 個字元').optional(),
   emergedAt: z.string().optional().or(z.coerce.date().optional()),
   notes: z.string().optional(),
-  imageUrl: z.string().url().optional().or(z.literal('')),
+  imageUrl: z.string().optional(),
   isPublished: z.boolean().default(false),
   isForSale: z.boolean().default(false),
   price: z.number().int().min(0, '價格不能為負數').optional(),
