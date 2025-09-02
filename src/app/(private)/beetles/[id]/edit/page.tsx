@@ -12,9 +12,14 @@ interface Beetle {
   emergedAt?: string
   notes?: string
   imageUrl?: string
+  imageData?: string
   isPublished: boolean
   isForSale: boolean
   price?: number
+  stage: string
+  larvaStage?: string
+  gender?: string
+  category: string
   createdAt: string
   updatedAt: string
   owner: {

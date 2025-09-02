@@ -12,9 +12,14 @@ interface Beetle {
   emergedAt?: string
   notes?: string
   imageUrl?: string
+  imageData?: string
   isPublished: boolean
   isForSale: boolean
   price?: number
+  stage: string
+  larvaStage?: string
+  gender?: string
+  category: string
   createdAt: string
   updatedAt: string
   owner: {
@@ -106,10 +111,10 @@ export default function BeetleDetailPage() {
         </div>
 
         <div className="grid md:grid-cols-2 gap-8">
-          {beetle.imageUrl && (
+          {(beetle.imageUrl || beetle.imageData) && (
             <div className="space-y-4">
               <Image
-                src={beetle.imageUrl}
+                src={beetle.imageData || beetle.imageUrl || ''}
                 alt={beetle.species}
                 width={500}
                 height={400}
@@ -123,7 +128,13 @@ export default function BeetleDetailPage() {
               <h1 className="text-3xl font-bold text-gray-900 mb-2">
                 {beetle.species}
               </h1>
-              <div className="flex gap-2 mb-4">
+              <div className="flex flex-wrap gap-2 mb-4">
+                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                  {beetle.category === 'rhinoceros' ? '兜蟲' : '鍬形蟲'}
+                </span>
+                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                  {beetle.stage === 'larva' ? `幼蟲 ${beetle.larvaStage || ''}` : `成蟲 ${beetle.gender === 'male' ? '公' : beetle.gender === 'female' ? '母' : ''}`}
+                </span>
                 {beetle.isPublished && (
                   <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
                     已上架
