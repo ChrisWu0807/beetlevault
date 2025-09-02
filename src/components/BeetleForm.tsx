@@ -64,8 +64,16 @@ export default function BeetleForm({ initialData, onSubmit, loading = false }: B
     }
   }
 
+  const handleFormSubmit = (data: any) => {
+    // 修正日期格式
+    if (data.emergedAt) {
+      data.emergedAt = new Date(data.emergedAt).toISOString()
+    }
+    onSubmit(data)
+  }
+
   return (
-    <form onSubmit={handleSubmit(onSubmit as any)} className="space-y-6">
+    <form onSubmit={handleSubmit(handleFormSubmit as any)} className="space-y-6">
       <div>
         <label htmlFor="species" className="block text-sm font-medium text-gray-700">
           品種名稱 *
