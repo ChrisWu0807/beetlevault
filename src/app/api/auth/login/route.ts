@@ -28,8 +28,8 @@ export async function POST(request: NextRequest) {
 
     // 建立 session
     const response = createSession(user.id)
-    response.headers.set('Content-Type', 'application/json')
     
+    // 直接返回帶有 cookie 的響應
     return new Response(JSON.stringify({ 
       user: {
         id: user.id,
@@ -38,7 +38,10 @@ export async function POST(request: NextRequest) {
       }
     }), {
       status: 200,
-      headers: response.headers,
+      headers: {
+        'Content-Type': 'application/json',
+        'Set-Cookie': response.headers.get('Set-Cookie') || '',
+      },
     })
   } catch (error) {
     if (error instanceof Error && error.name === 'ZodError') {
