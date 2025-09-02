@@ -71,8 +71,10 @@ export default function BeetleForm({ initialData, onSubmit, loading = false }: B
 
   const handleFormSubmit = (data: any) => {
     // 修正日期格式
-    if (data.emergedAt) {
+    if (data.emergedAt && data.emergedAt.trim() !== '') {
       data.emergedAt = new Date(data.emergedAt).toISOString()
+    } else {
+      data.emergedAt = null
     }
     onSubmit(data)
   }
