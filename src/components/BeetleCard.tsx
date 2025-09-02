@@ -11,6 +11,7 @@ interface Beetle {
   emergedAt?: string
   notes?: string
   imageUrl?: string
+  imageData?: string
   isPublished: boolean
   isForSale: boolean
   price?: number
@@ -37,10 +38,10 @@ export default function BeetleCard({ beetle, showOwner = false, onTogglePublish 
   return (
     <div className="card p-6 hover:shadow-lg transition-shadow">
       <div className="flex flex-col md:flex-row gap-4">
-        {beetle.imageUrl && (
+        {(beetle.imageUrl || beetle.imageData) && (
           <div className="flex-shrink-0">
             <Image
-              src={beetle.imageUrl}
+              src={beetle.imageData || beetle.imageUrl || ''}
               alt={beetle.species}
               width={200}
               height={150}

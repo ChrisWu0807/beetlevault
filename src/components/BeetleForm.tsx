@@ -12,7 +12,7 @@ interface BeetleFormProps {
 }
 
 export default function BeetleForm({ initialData, onSubmit, loading = false }: BeetleFormProps) {
-  const [imageUrl, setImageUrl] = useState(initialData?.imageUrl || '')
+  const [imageData, setImageData] = useState(initialData?.imageData || '')
   const [uploading, setUploading] = useState(false)
 
   const {
@@ -52,8 +52,8 @@ export default function BeetleForm({ initialData, onSubmit, loading = false }: B
 
       const result = await response.json()
       if (response.ok) {
-        setImageUrl(result.imageUrl)
-        setValue('imageUrl', result.imageUrl)
+        setImageData(result.imageData)
+        setValue('imageData', result.imageData)
       } else {
         alert(result.error?.message || '上傳失敗')
       }
@@ -147,10 +147,10 @@ export default function BeetleForm({ initialData, onSubmit, loading = false }: B
         {uploading && (
           <p className="mt-1 text-sm text-gray-500">上傳中...</p>
         )}
-        {imageUrl && (
+        {imageData && (
           <div className="mt-2">
             <img
-              src={imageUrl}
+              src={imageData}
               alt="預覽"
               className="w-32 h-24 object-cover rounded-lg"
             />

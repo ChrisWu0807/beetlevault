@@ -17,6 +17,7 @@ export const beetleSchema = z.object({
   emergedAt: z.string().optional().or(z.coerce.date().optional()),
   notes: z.string().optional(),
   imageUrl: z.string().optional(),
+  imageData: z.string().optional(),
   isPublished: z.boolean().default(false),
   isForSale: z.boolean().default(false),
   price: z.number().int().min(0, '價格不能為負數').optional(),

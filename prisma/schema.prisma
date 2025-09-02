@@ -31,6 +31,7 @@ model Beetle {
   emergedAt     DateTime?
   notes         String?
   imageUrl      String?
+  imageData     String?  // Base64 編碼的圖片資料
   isPublished   Boolean  @default(false)
   isForSale     Boolean  @default(false)
   price         Int?

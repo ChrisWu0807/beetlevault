@@ -42,28 +42,15 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // 生成檔案名稱
-    const fileExtension = file.name.split('.').pop()
-    const fileName = `${randomUUID()}.${fileExtension}`
-    
-    // 確保上傳目錄存在
-    const uploadDir = join(process.cwd(), 'public', 'uploads')
-    try {
-      await mkdir(uploadDir, { recursive: true })
-    } catch (error) {
-      // 目錄可能已存在，忽略錯誤
-    }
-
-    // 儲存檔案
-    const filePath = join(uploadDir, fileName)
+    // 將檔案轉為 Base64
     const bytes = await file.arrayBuffer()
     const buffer = Buffer.from(bytes)
+    const base64Data = buffer.toString('base64')
     
-    await writeFile(filePath, buffer)
+    // 生成資料 URL
+    const imageData = `data:${file.type};base64,${base64Data}`
 
-    const imageUrl = `/uploads/${fileName}`
-
-    return Response.json({ imageUrl })
+    return Response.json({ imageData })
   } catch (error) {
     console.error('Upload error:', error)
     return Response.json(
