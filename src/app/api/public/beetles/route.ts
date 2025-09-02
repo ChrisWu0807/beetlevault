@@ -12,6 +12,12 @@ export async function GET(request: NextRequest) {
       sort: searchParams.get('sort'),
       page: searchParams.get('page'),
       pageSize: searchParams.get('pageSize'),
+      stage: searchParams.get('stage'),
+      larvaStage: searchParams.get('larvaStage'),
+      gender: searchParams.get('gender'),
+      category: searchParams.get('category'),
+      emergedFrom: searchParams.get('emergedFrom'),
+      emergedTo: searchParams.get('emergedTo'),
     })
 
     const where: any = {
@@ -37,6 +43,37 @@ export async function GET(request: NextRequest) {
       where.isForSale = true
     } else if (query.forSale === 'false') {
       where.isForSale = false
+    }
+
+    // 階段篩選
+    if (query.stage) {
+      where.stage = query.stage
+    }
+
+    // 幼蟲階段篩選
+    if (query.larvaStage) {
+      where.larvaStage = query.larvaStage
+    }
+
+    // 性別篩選
+    if (query.gender) {
+      where.gender = query.gender
+    }
+
+    // 物種分類篩選
+    if (query.category) {
+      where.category = query.category
+    }
+
+    // 羽化日期範圍篩選
+    if (query.emergedFrom || query.emergedTo) {
+      where.emergedAt = {}
+      if (query.emergedFrom) {
+        where.emergedAt.gte = new Date(query.emergedFrom)
+      }
+      if (query.emergedTo) {
+        where.emergedAt.lte = new Date(query.emergedTo)
+      }
     }
 
     // 排序

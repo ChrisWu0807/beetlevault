@@ -15,6 +15,10 @@ interface Beetle {
   isPublished: boolean
   isForSale: boolean
   price?: number
+  stage: string
+  larvaStage?: string
+  gender?: string
+  category: string
   createdAt: string
   updatedAt: string
   owner: {
@@ -35,6 +39,18 @@ export default function BeetleCard({ beetle, showOwner = false, onTogglePublish 
     return new Date(dateString).toLocaleDateString('zh-TW')
   }
 
+  const getCategoryLabel = (category: string) => {
+    return category === 'rhinoceros' ? '兜蟲' : '鍬形蟲'
+  }
+
+  const getStageLabel = (stage: string, larvaStage?: string, gender?: string) => {
+    if (stage === 'larva') {
+      return `幼蟲 ${larvaStage || ''}`
+    } else {
+      return `成蟲 ${gender === 'male' ? '公' : gender === 'female' ? '母' : ''}`
+    }
+  }
+
   return (
     <div className="card p-6 hover:shadow-lg transition-shadow">
       <div className="flex flex-col md:flex-row gap-4">
@@ -52,9 +68,19 @@ export default function BeetleCard({ beetle, showOwner = false, onTogglePublish 
         
         <div className="flex-1">
           <div className="flex justify-between items-start mb-2">
-            <h3 className="text-xl font-semibold text-gray-900">
-              {beetle.species}
-            </h3>
+            <div>
+              <h3 className="text-xl font-semibold text-gray-900">
+                {beetle.species}
+              </h3>
+              <div className="flex gap-2 mt-1">
+                <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                  {getCategoryLabel(beetle.category)}
+                </span>
+                <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                  {getStageLabel(beetle.stage, beetle.larvaStage, beetle.gender)}
+                </span>
+              </div>
+            </div>
             {onTogglePublish && (
               <PublishToggle
                 beetleId={beetle.id}

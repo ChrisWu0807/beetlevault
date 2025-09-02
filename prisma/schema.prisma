@@ -35,6 +35,13 @@ model Beetle {
   isPublished   Boolean  @default(false)
   isForSale     Boolean  @default(false)
   price         Int?
+  
+  // 新增分類欄位
+  stage         String   // "larva" | "adult" - 成蟲/幼蟲
+  larvaStage    String?  // "L1" | "L2" | "L3" - 幼蟲階段 (僅幼蟲時使用)
+  gender        String?  // "male" | "female" - 性別 (僅成蟲時使用)
+  category      String   // "rhinoceros" | "stag" - 兜蟲/鍬形蟲
+  
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 

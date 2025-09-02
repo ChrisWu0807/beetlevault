@@ -31,10 +31,15 @@ export default function BeetleForm({ initialData, onSubmit, loading = false }: B
       isPublished: initialData?.isPublished || false,
       isForSale: initialData?.isForSale || false,
       price: initialData?.price || undefined,
+      stage: initialData?.stage || 'adult',
+      larvaStage: initialData?.larvaStage || undefined,
+      gender: initialData?.gender || undefined,
+      category: initialData?.category || 'rhinoceros',
     },
   })
 
   const isForSale = watch('isForSale')
+  const stage = watch('stage')
 
   const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
@@ -88,6 +93,77 @@ export default function BeetleForm({ initialData, onSubmit, loading = false }: B
           <p className="mt-1 text-sm text-red-600">{errors.species.message}</p>
         )}
       </div>
+
+      <div>
+        <label htmlFor="category" className="block text-sm font-medium text-gray-700">
+          物種分類 *
+        </label>
+        <select
+          {...register('category')}
+          className="input-field mt-1"
+        >
+          <option value="rhinoceros">兜蟲</option>
+          <option value="stag">鍬形蟲</option>
+        </select>
+        {errors.category && (
+          <p className="mt-1 text-sm text-red-600">{errors.category.message}</p>
+        )}
+      </div>
+
+      <div>
+        <label htmlFor="stage" className="block text-sm font-medium text-gray-700">
+          階段 *
+        </label>
+        <select
+          {...register('stage')}
+          className="input-field mt-1"
+        >
+          <option value="adult">成蟲</option>
+          <option value="larva">幼蟲</option>
+        </select>
+        {errors.stage && (
+          <p className="mt-1 text-sm text-red-600">{errors.stage.message}</p>
+        )}
+      </div>
+
+      {stage === 'larva' && (
+        <div>
+          <label htmlFor="larvaStage" className="block text-sm font-medium text-gray-700">
+            幼蟲階段 *
+          </label>
+          <select
+            {...register('larvaStage')}
+            className="input-field mt-1"
+          >
+            <option value="">請選擇階段</option>
+            <option value="L1">L1</option>
+            <option value="L2">L2</option>
+            <option value="L3">L3</option>
+          </select>
+          {errors.larvaStage && (
+            <p className="mt-1 text-sm text-red-600">{errors.larvaStage.message}</p>
+          )}
+        </div>
+      )}
+
+      {stage === 'adult' && (
+        <div>
+          <label htmlFor="gender" className="block text-sm font-medium text-gray-700">
+            性別 *
+          </label>
+          <select
+            {...register('gender')}
+            className="input-field mt-1"
+          >
+            <option value="">請選擇性別</option>
+            <option value="male">公</option>
+            <option value="female">母</option>
+          </select>
+          {errors.gender && (
+            <p className="mt-1 text-sm text-red-600">{errors.gender.message}</p>
+          )}
+        </div>
+      )}
 
       <div>
         <label htmlFor="lineage" className="block text-sm font-medium text-gray-700">
