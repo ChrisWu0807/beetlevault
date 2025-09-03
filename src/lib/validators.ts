@@ -43,20 +43,20 @@ export const beetleSchema = z.object({
 })
 
 export const publicBeetleQuerySchema = z.object({
-  q: z.string().optional(),
-  species: z.string().optional(),
+  q: z.string().optional().or(z.literal('')),
+  species: z.string().optional().or(z.literal('')),
   forSale: z.enum(['true', 'false']).optional(),
-  sort: z.enum(['createdAt_desc', 'createdAt_asc', 'species_asc']).default('createdAt_desc'),
-  page: z.coerce.number().min(1).default(1),
-  pageSize: z.coerce.number().min(1).max(100).default(20),
+  sort: z.enum(['createdAt_desc', 'createdAt_asc', 'species_asc']).optional().default('createdAt_desc'),
+  page: z.coerce.number().min(1).optional().default(1),
+  pageSize: z.coerce.number().min(1).max(100).optional().default(20),
   
   // 新增篩選條件
   stage: z.enum(['larva', 'adult']).optional(),
   larvaStage: z.enum(['L1', 'L2', 'L3']).optional(),
   gender: z.enum(['male', 'female']).optional(),
   category: z.enum(['rhinoceros', 'stag']).optional(),
-  emergedFrom: z.string().optional(), // 羽化日期範圍開始
-  emergedTo: z.string().optional(),   // 羽化日期範圍結束
+  emergedFrom: z.string().optional().or(z.literal('')), // 羽化日期範圍開始
+  emergedTo: z.string().optional().or(z.literal('')),   // 羽化日期範圍結束
 })
 
 export type SignUpInput = z.infer<typeof signUpSchema>
