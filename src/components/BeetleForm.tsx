@@ -25,6 +25,7 @@ export default function BeetleForm({ initialData, onSubmit, loading = false }: B
   } = useForm<BeetleInput>({
     resolver: zodResolver(beetleSchema),
     mode: 'onChange', // 即時驗證
+    reValidateMode: 'onChange', // 重新驗證模式
     defaultValues: {
       species: initialData?.species || '',
       lineage: initialData?.lineage || '',
@@ -33,8 +34,8 @@ export default function BeetleForm({ initialData, onSubmit, loading = false }: B
       isPublished: initialData?.isPublished || false,
       isForSale: initialData?.isForSale || false,
       price: initialData?.price || undefined,
-      stage: initialData?.stage || 'adult',
-      larvaStage: initialData?.larvaStage || undefined,
+      stage: initialData?.stage || 'larva',
+      larvaStage: initialData?.larvaStage || 'L1',
       gender: initialData?.gender || undefined,
       category: initialData?.category || 'rhinoceros',
       size: initialData?.size || '',
