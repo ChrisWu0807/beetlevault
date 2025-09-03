@@ -23,10 +23,25 @@ export const beetleSchema = z.object({
   price: z.number().int().min(0, '價格不能為負數').optional(),
   
   // 新增分類欄位
-  stage: z.enum(['larva', 'adult'], { required_error: '請選擇成蟲或幼蟲' }),
-  larvaStage: z.enum(['L1', 'L2', 'L3']).optional(),
+  stage: z.enum(['larva', 'adult', 'egg'], { required_error: '請選擇成蟲、幼蟲或卵期' }),
+  larvaStage: z.enum(['L1', 'L2', 'L3', 'unknown']).optional(),
   gender: z.enum(['male', 'female']).optional(),
   category: z.enum(['rhinoceros', 'stag'], { required_error: '請選擇兜蟲或鍬形蟲' }),
+  
+  // 成蟲專用欄位
+  size: z.string().optional(), // 尺寸 (mm 或 all size)
+  generation: z.enum(['cbf1', 'cbf2', 'cbf3', 'cbf4', 'cbf5', 'cbf5+', 'wd1', 'wd2', 'unknown']).optional(), // 累代
+  feedingDate: z.string().optional().or(z.coerce.date().optional()), // 開吃日期
+  
+  // 幼蟲專用欄位
+  weight: z.number().min(0, '重量不能為負數').optional(), // 重量 (g)
+  
+  // 紀錄檔 (幼蟲專用)
+  records: z.array(z.object({
+    stage: z.enum(['egg', 'L1', 'L2', 'L3']).optional(),
+    date: z.string().optional().or(z.coerce.date().optional()),
+    weight: z.number().min(0, '重量不能為負數').optional(),
+  })).optional(),
 }).refine((data) => {
   // 如果是幼蟲，必須選擇幼蟲階段
   if (data.stage === 'larva' && !data.larvaStage) {

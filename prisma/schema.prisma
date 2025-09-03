@@ -37,10 +37,19 @@ model Beetle {
   price         Int?
   
   // 新增分類欄位
-  stage         String   // "larva" | "adult" - 成蟲/幼蟲
-  larvaStage    String?  // "L1" | "L2" | "L3" - 幼蟲階段 (僅幼蟲時使用)
+  stage         String   // "larva" | "adult" | "egg" - 成蟲/幼蟲/卵期
+  larvaStage    String?  // "L1" | "L2" | "L3" | "unknown" - 幼蟲階段 (僅幼蟲時使用)
   gender        String?  // "male" | "female" - 性別 (僅成蟲時使用)
   category      String   // "rhinoceros" | "stag" - 兜蟲/鍬形蟲
+  
+  // 成蟲專用欄位
+  size          String?  // 尺寸 (mm 或 all size)
+  generation    String?  // 累代 (cbf1, cbf2, cbf3, cbf4, cbf5, cbf5+, wd1, wd2, unknown)
+  feedingDate   DateTime? // 開吃日期
+  
+  // 幼蟲專用欄位
+  weight        Float?   // 重量 (g)
+  records       Json?    // 紀錄檔 (JSON 格式儲存)
   
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt

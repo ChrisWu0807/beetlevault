@@ -20,6 +20,7 @@ export default function BeetleForm({ initialData, onSubmit, loading = false }: B
     handleSubmit,
     setValue,
     watch,
+    control,
     formState: { errors },
   } = useForm<BeetleInput>({
     resolver: zodResolver(beetleSchema),
@@ -35,11 +36,17 @@ export default function BeetleForm({ initialData, onSubmit, loading = false }: B
       larvaStage: initialData?.larvaStage || undefined,
       gender: initialData?.gender || undefined,
       category: initialData?.category || 'rhinoceros',
+      size: initialData?.size || '',
+      generation: initialData?.generation || undefined,
+      feedingDate: initialData?.feedingDate ? (typeof initialData.feedingDate === 'string' ? initialData.feedingDate.split('T')[0] : initialData.feedingDate.toISOString().split('T')[0]) : undefined,
+      weight: initialData?.weight || undefined,
+      records: initialData?.records || [],
     },
   })
 
   const isForSale = watch('isForSale')
   const stage = watch('stage')
+  const [records, setRecords] = useState(initialData?.records || [])
 
   const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
@@ -69,6 +76,21 @@ export default function BeetleForm({ initialData, onSubmit, loading = false }: B
     }
   }
 
+  // 紀錄檔處理函數
+  const addRecord = () => {
+    setRecords([...records, { stage: '', date: '', weight: undefined }])
+  }
+
+  const removeRecord = (index: number) => {
+    setRecords(records.filter((_, i) => i !== index))
+  }
+
+  const updateRecord = (index: number, field: string, value: any) => {
+    const newRecords = [...records]
+    newRecords[index] = { ...newRecords[index], [field]: value }
+    setRecords(newRecords)
+  }
+
   const handleFormSubmit = (data: any) => {
     // 修正日期格式
     if (data.emergedAt && data.emergedAt.trim() !== '') {
@@ -76,6 +98,17 @@ export default function BeetleForm({ initialData, onSubmit, loading = false }: B
     } else {
       data.emergedAt = null
     }
+
+    // 修正開吃日期格式
+    if (data.feedingDate && data.feedingDate.trim() !== '') {
+      data.feedingDate = new Date(data.feedingDate).toISOString()
+    } else {
+      data.feedingDate = null
+    }
+
+    // 添加紀錄檔資料
+    data.records = records
+
     onSubmit(data)
   }
 
@@ -122,6 +155,7 @@ export default function BeetleForm({ initialData, onSubmit, loading = false }: B
         >
           <option value="adult">成蟲</option>
           <option value="larva">幼蟲</option>
+          <option value="egg">卵期</option>
         </select>
         {errors.stage && (
           <p className="mt-1 text-sm text-red-600">{errors.stage.message}</p>
@@ -141,6 +175,7 @@ export default function BeetleForm({ initialData, onSubmit, loading = false }: B
             <option value="L1">L1</option>
             <option value="L2">L2</option>
             <option value="L3">L3</option>
+            <option value="unknown">不明</option>
           </select>
           {errors.larvaStage && (
             <p className="mt-1 text-sm text-red-600">{errors.larvaStage.message}</p>
@@ -167,6 +202,83 @@ export default function BeetleForm({ initialData, onSubmit, loading = false }: B
         </div>
       )}
 
+      {/* 成蟲專用欄位 */}
+      {stage === 'adult' && (
+        <>
+          <div>
+            <label htmlFor="size" className="block text-sm font-medium text-gray-700">
+              尺寸（選填）
+            </label>
+            <input
+              {...register('size')}
+              type="text"
+              className="input-field mt-1"
+              placeholder="例如：86mm 或 all size"
+            />
+            {errors.size && (
+              <p className="mt-1 text-sm text-red-600">{errors.size.message}</p>
+            )}
+          </div>
+
+          <div>
+            <label htmlFor="generation" className="block text-sm font-medium text-gray-700">
+              累代（選填）
+            </label>
+            <select
+              {...register('generation')}
+              className="input-field mt-1"
+            >
+              <option value="">請選擇累代</option>
+              <option value="cbf1">CBF1</option>
+              <option value="cbf2">CBF2</option>
+              <option value="cbf3">CBF3</option>
+              <option value="cbf4">CBF4</option>
+              <option value="cbf5">CBF5</option>
+              <option value="cbf5+">CBF5+</option>
+              <option value="wd1">WD1</option>
+              <option value="wd2">WD2</option>
+              <option value="unknown">不明</option>
+            </select>
+            {errors.generation && (
+              <p className="mt-1 text-sm text-red-600">{errors.generation.message}</p>
+            )}
+          </div>
+
+          <div>
+            <label htmlFor="feedingDate" className="block text-sm font-medium text-gray-700">
+              開吃日期（選填）
+            </label>
+            <input
+              {...register('feedingDate')}
+              type="date"
+              className="input-field mt-1"
+            />
+            {errors.feedingDate && (
+              <p className="mt-1 text-sm text-red-600">{errors.feedingDate.message}</p>
+            )}
+          </div>
+        </>
+      )}
+
+      {/* 幼蟲專用欄位 */}
+      {stage === 'larva' && (
+        <div>
+          <label htmlFor="weight" className="block text-sm font-medium text-gray-700">
+            重量（選填）
+          </label>
+          <input
+            {...register('weight', { valueAsNumber: true })}
+            type="number"
+            step="0.1"
+            className="input-field mt-1"
+            placeholder="重量 (g)"
+          />
+          {errors.weight && (
+            <p className="mt-1 text-sm text-red-600">{errors.weight.message}</p>
+          )}
+        </div>
+      )}
+
       <div>
         <label htmlFor="lineage" className="block text-sm font-medium text-gray-700">
           血統（選填）
@@ -182,19 +294,82 @@ export default function BeetleForm({ initialData, onSubmit, loading = false }: B
         )}
       </div>
 
-      <div>
-        <label htmlFor="emergedAt" className="block text-sm font-medium text-gray-700">
-          羽化日期（選填）
-        </label>
-        <input
-          {...register('emergedAt')}
-          type="date"
-          className="input-field mt-1"
-        />
-        {errors.emergedAt && (
-          <p className="mt-1 text-sm text-red-600">{errors.emergedAt.message}</p>
-        )}
-      </div>
+      {/* 羽化日期 - 只有成蟲和卵期顯示 */}
+      {(stage === 'adult' || stage === 'egg') && (
+        <div>
+          <label htmlFor="emergedAt" className="block text-sm font-medium text-gray-700">
+            羽化日期（選填）
+          </label>
+          <input
+            {...register('emergedAt')}
+            type="date"
+            className="input-field mt-1"
+          />
+          {errors.emergedAt && (
+            <p className="mt-1 text-sm text-red-600">{errors.emergedAt.message}</p>
+          )}
+        </div>
+      )}
+
+      {/* 幼蟲紀錄檔 */}
+      {stage === 'larva' && (
+        <div>
+          <div className="flex items-center justify-between mb-2">
+            <label className="block text-sm font-medium text-gray-700">
+              紀錄檔（選填）
+            </label>
+            <button
+              type="button"
+              onClick={addRecord}
+              className="text-sm bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600"
+            >
+              新增紀錄
+            </button>
+          </div>
+          
+          {records.map((record, index) => (
+            <div key={index} className="grid grid-cols-3 gap-2 mb-2">
+              <select
+                value={record.stage || ''}
+                onChange={(e) => updateRecord(index, 'stage', e.target.value)}
+                className="input-field"
+              >
+                <option value="">階段</option>
+                <option value="egg">卵</option>
+                <option value="L1">L1</option>
+                <option value="L2">L2</option>
+                <option value="L3">L3</option>
+              </select>
+              
+              <input
+                type="date"
+                value={record.date || ''}
+                onChange={(e) => updateRecord(index, 'date', e.target.value)}
+                className="input-field"
+                placeholder="日期"
+              />
+              
+              <div className="flex gap-1">
+                <input
+                  type="number"
+                  step="0.1"
+                  value={record.weight || ''}
+                  onChange={(e) => updateRecord(index, 'weight', parseFloat(e.target.value) || undefined)}
+                  className="input-field flex-1"
+                  placeholder="重量(g)"
+                />
+                <button
+                  type="button"
+                  onClick={() => removeRecord(index)}
+                  className="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600"
+                >
+                  ×
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
 
       <div>
         <label htmlFor="notes" className="block text-sm font-medium text-gray-700">

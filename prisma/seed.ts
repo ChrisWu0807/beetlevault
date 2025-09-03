@@ -45,6 +45,9 @@ async function main() {
       stage: 'adult',
       gender: 'male',
       category: 'rhinoceros',
+      size: '86mm',
+      generation: 'wd1',
+      feedingDate: new Date('2023-06-20'),
     },
     {
       ownerId: user1.id,
@@ -57,6 +60,8 @@ async function main() {
       stage: 'adult',
       gender: 'female',
       category: 'stag',
+      size: '52mm',
+      generation: 'cbf2',
     },
     {
       ownerId: user1.id,
@@ -70,6 +75,9 @@ async function main() {
       stage: 'adult',
       gender: 'male',
       category: 'stag',
+      size: '45mm',
+      generation: 'cbf1',
+      feedingDate: new Date('2023-08-15'),
     },
     {
       ownerId: user2.id,
@@ -83,18 +91,25 @@ async function main() {
       stage: 'adult',
       gender: 'male',
       category: 'rhinoceros',
+      size: 'all size',
+      generation: 'cbf3',
+      feedingDate: new Date('2023-06-05'),
     },
     {
       ownerId: user2.id,
       species: '姬兜蟲',
       lineage: '姬兜蟲',
-      emergedAt: new Date('2023-09-05'),
       notes: '小巧可愛，適合新手飼養。',
       isPublished: false,
       isForSale: false,
       stage: 'larva',
       larvaStage: 'L2',
       category: 'rhinoceros',
+      weight: 15.5,
+      records: [
+        { stage: 'L1', date: '2023-07-01', weight: 8.2 },
+        { stage: 'L2', date: '2023-08-15', weight: 15.5 },
+      ],
     },
   ]
 
