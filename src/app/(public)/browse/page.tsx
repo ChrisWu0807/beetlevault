@@ -34,7 +34,7 @@ export default function BrowsePage() {
   const [loading, setLoading] = useState(true)
   const [pagination, setPagination] = useState({
     page: 1,
-    pageSize: 20,
+    pageSize: 10, // 減少每頁數量以提升載入速度
     total: 0,
     totalPages: 0,
   })
@@ -48,7 +48,11 @@ export default function BrowsePage() {
     setLoading(true)
     try {
       const params = new URLSearchParams(searchParams.toString())
+      const startTime = Date.now()
       const response = await fetch(`/api/public/beetles?${params.toString()}`)
+      const endTime = Date.now()
+      
+      console.log(`Browse page API 請求時間: ${endTime - startTime}ms`)
       
       if (response.ok) {
         const data = await response.json()
