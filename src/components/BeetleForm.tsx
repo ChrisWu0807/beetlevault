@@ -479,14 +479,34 @@ export default function BeetleForm({ initialData, onSubmit, loading = false }: B
         <p>isDirty: {isDirty ? '✅ true' : '❌ false'}</p>
         <p>loading: {loading ? '⏳ true' : '✅ false'}</p>
         <p>按鈕狀態: {loading || !isValid ? '🚫 禁用' : '✅ 可點擊'}</p>
-        {Object.keys(errors).length > 0 && (
-          <div className="mt-2">
-            <p className="font-bold text-red-600">驗證錯誤：</p>
-            <pre className="text-xs bg-red-50 p-2 rounded overflow-auto">
-              {JSON.stringify(errors, null, 2)}
-            </pre>
+        
+        {/* 顯示所有錯誤 */}
+        <div className="mt-2">
+          <p className="font-bold text-red-600">驗證錯誤：</p>
+          {Object.keys(errors).length > 0 ? (
+            <div className="text-xs bg-red-50 p-2 rounded">
+              {Object.entries(errors).map(([field, error]) => (
+                <div key={field} className="mb-1">
+                  <strong>{field}:</strong> {error?.message || '有錯誤'}
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="text-green-600">✅ 無驗證錯誤</p>
+          )}
+        </div>
+        
+        {/* 顯示表單值 */}
+        <div className="mt-2">
+          <p className="font-bold">表單值：</p>
+          <div className="text-xs bg-blue-50 p-2 rounded">
+            {Object.entries(watch()).map(([field, value]) => (
+              <div key={field}>
+                <strong>{field}:</strong> {String(value || '')}
+              </div>
+            ))}
           </div>
-        )}
+        </div>
       </div>
     </form>
   )
