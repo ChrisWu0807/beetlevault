@@ -101,6 +101,36 @@ export default function BeetleForm({ initialData, onSubmit, loading = false }: B
   }
 
   const handleFormSubmit = (data: any) => {
+    // 檢查必填欄位
+    const missingFields = []
+    
+    if (!data.species || data.species.trim() === '') {
+      missingFields.push('品種名稱')
+    }
+    
+    if (!data.stage) {
+      missingFields.push('階段')
+    }
+    
+    if (!data.category) {
+      missingFields.push('物種分類')
+    }
+    
+    // 檢查階段相關的必填欄位
+    if (data.stage === 'larva' && !data.larvaStage) {
+      missingFields.push('幼蟲階段')
+    }
+    
+    if (data.stage === 'adult' && !data.gender) {
+      missingFields.push('性別')
+    }
+    
+    // 如果有必填欄位未填寫，顯示錯誤
+    if (missingFields.length > 0) {
+      alert(`請填寫以下必填欄位：\n${missingFields.join('、')}`)
+      return
+    }
+    
     // 修正日期格式
     if (data.emergedAt && data.emergedAt.trim() !== '') {
       data.emergedAt = new Date(data.emergedAt).toISOString()
@@ -485,7 +515,7 @@ export default function BeetleForm({ initialData, onSubmit, loading = false }: B
       <div className="flex gap-4">
         <button
           type="submit"
-          disabled={loading || !isValid}
+          disabled={loading}
           className="btn-primary flex-1"
         >
           {loading ? '儲存中...' : '儲存'}
