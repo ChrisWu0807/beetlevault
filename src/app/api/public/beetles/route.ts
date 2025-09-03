@@ -1,9 +1,11 @@
 import { NextRequest } from 'next/server'
 import { publicBeetleQuerySchema } from '@/lib/validators'
 import { prisma } from '@/lib/db'
+import { cache } from '@/lib/cache'
 
 export async function GET(request: NextRequest) {
   try {
+    const startTime = Date.now()
     const { searchParams } = new URL(request.url)
     const query = publicBeetleQuerySchema.parse({
       q: searchParams.get('q'),
@@ -19,6 +21,16 @@ export async function GET(request: NextRequest) {
       emergedFrom: searchParams.get('emergedFrom'),
       emergedTo: searchParams.get('emergedTo'),
     })
+
+    // 生成快取鍵
+    const cacheKey = `public-beetles:${JSON.stringify(query)}`
+    
+    // 嘗試從快取獲取
+    const cachedResult = cache.get(cacheKey)
+    if (cachedResult) {
+      console.log(`Public beetles API 快取命中: ${Date.now() - startTime}ms`)
+      return Response.json(cachedResult)
+    }
 
     const where: any = {
       isPublished: true,
@@ -84,25 +96,30 @@ export async function GET(request: NextRequest) {
       orderBy = { species: 'asc' }
     }
 
-    const beetles = await prisma.beetle.findMany({
-      where,
-      include: {
-        owner: {
-          select: {
-            id: true,
-            email: true,
-            name: true,
+    // 並行執行查詢以提高性能
+    const [beetles, total] = await Promise.all([
+      prisma.beetle.findMany({
+        where,
+        include: {
+          owner: {
+            select: {
+              id: true,
+              email: true,
+              name: true,
+            },
           },
         },
-      },
-      orderBy,
-      skip: ((query.page || 1) - 1) * (query.pageSize || 20),
-      take: query.pageSize || 20,
-    })
+        orderBy,
+        skip: ((query.page || 1) - 1) * (query.pageSize || 20),
+        take: query.pageSize || 20,
+      }),
+      prisma.beetle.count({ where })
+    ])
 
-    const total = await prisma.beetle.count({ where })
+    const endTime = Date.now()
+    console.log(`Public beetles API 查詢時間: ${endTime - startTime}ms`)
 
-    return Response.json({
+    const result = {
       beetles,
       pagination: {
         page: query.page || 1,
@@ -110,7 +127,12 @@ export async function GET(request: NextRequest) {
         total,
         totalPages: Math.ceil(total / (query.pageSize || 20)),
       },
-    })
+    }
+
+    // 快取結果 (2 分鐘)
+    cache.set(cacheKey, result, 2 * 60 * 1000)
+
+    return Response.json(result)
   } catch (error) {
     if (error instanceof Error && error.name === 'ZodError') {
       return Response.json(

@@ -2,6 +2,7 @@ import { NextRequest } from 'next/server'
 import { beetleSchema } from '@/lib/validators'
 import { getSessionUser } from '@/lib/session'
 import { prisma } from '@/lib/db'
+import { cache } from '@/lib/cache'
 
 export async function POST(request: NextRequest) {
   try {
@@ -66,6 +67,16 @@ export async function GET(request: NextRequest) {
     const page = parseInt(searchParams.get('page') || '1')
     const pageSize = parseInt(searchParams.get('pageSize') || '20')
 
+    // 生成快取鍵
+    const cacheKey = `user-beetles:${user.id}:${page}:${pageSize}`
+    
+    // 嘗試從快取獲取
+    const cachedResult = cache.get(cacheKey)
+    if (cachedResult) {
+      console.log(`User beetles API 快取命中: ${Date.now() - startTime}ms`)
+      return Response.json(cachedResult)
+    }
+
     // 並行執行查詢以提高性能
     const [beetles, total] = await Promise.all([
       prisma.beetle.findMany({
@@ -97,7 +108,7 @@ export async function GET(request: NextRequest) {
     const endTime = Date.now()
     console.log(`Beetles API 查詢時間: ${endTime - startTime}ms`)
 
-    return Response.json({
+    const result = {
       beetles,
       pagination: {
         page,
@@ -105,7 +116,12 @@ export async function GET(request: NextRequest) {
         total,
         totalPages: Math.ceil(total / pageSize),
       },
-    })
+    }
+
+    // 快取結果 (1 分鐘)
+    cache.set(cacheKey, result, 1 * 60 * 1000)
+
+    return Response.json(result)
   } catch (error) {
     console.error('Get beetles error:', error)
     return Response.json(

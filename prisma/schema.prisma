@@ -57,5 +57,10 @@ model Beetle {
   @@index([ownerId, isPublished])
   @@index([isPublished, species])
   @@index([species])
+  @@index([isPublished, isForSale])
+  @@index([stage, category])
+  @@index([emergedAt])
+  @@index([createdAt])
+  @@index([isPublished, stage, category])
   @@map("beetles")
 }
