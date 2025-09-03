@@ -343,7 +343,7 @@ export default function BeetleForm({ initialData, onSubmit, loading = false }: B
               
               <input
                 type="date"
-                value={record.date || ''}
+                value={record.date ? (typeof record.date === 'string' ? record.date : record.date.toISOString().split('T')[0]) : ''}
                 onChange={(e) => updateRecord(index, 'date', e.target.value)}
                 className="input-field"
                 placeholder="日期"
