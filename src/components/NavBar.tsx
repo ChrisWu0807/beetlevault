@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
+import { useRouter, usePathname } from 'next/navigation'
 import { useState, useEffect } from 'react'
 
 interface User {
@@ -14,10 +14,18 @@ export default function NavBar() {
   const [user, setUser] = useState<User | null>(null)
   const [loading, setLoading] = useState(true)
   const router = useRouter()
+  const pathname = usePathname()
 
   useEffect(() => {
     fetchUser()
   }, [])
+
+  // 當路由變化時重新獲取用戶資訊（特別是從登入頁面跳轉後）
+  useEffect(() => {
+    if (pathname === '/dashboard' || pathname === '/') {
+      fetchUser()
+    }
+  }, [pathname])
 
   const fetchUser = async () => {
     try {

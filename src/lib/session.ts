@@ -41,9 +41,10 @@ export function createSession(userId: string): NextResponse {
   // 在生產環境中，應該使用 JWT 或 Redis
   response.cookies.set('session', userId, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
+    secure: false, // 暫時設為 false 以解決 Zeabur 部署問題
     sameSite: 'lax',
     maxAge: 60 * 60 * 24 * 7, // 7 days
+    path: '/', // 明確設置路徑
   })
   
   return response
