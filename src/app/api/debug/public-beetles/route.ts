@@ -104,8 +104,8 @@ export async function GET(request: NextRequest) {
         },
       },
       orderBy,
-      skip: (query.page - 1) * query.pageSize,
-      take: query.pageSize,
+      skip: ((query.page || 1) - 1) * (query.pageSize || 20),
+      take: query.pageSize || 20,
     })
 
     const total = await prisma.beetle.count({ where })
