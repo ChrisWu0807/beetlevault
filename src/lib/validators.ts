@@ -43,20 +43,25 @@ export const beetleSchema = z.object({
 })
 
 export const publicBeetleQuerySchema = z.object({
+  // 搜尋欄位 - 處理 null 值
   q: z.union([z.string(), z.null()]).optional().transform(val => val === null ? undefined : val),
   species: z.union([z.string(), z.null()]).optional().transform(val => val === null ? undefined : val),
-  forSale: z.enum(['true', 'false']).optional(),
-  sort: z.enum(['createdAt_desc', 'createdAt_asc', 'species_asc']).optional().default('createdAt_desc'),
-  page: z.coerce.number().min(1).optional().default(1),
-  pageSize: z.coerce.number().min(1).max(100).optional().default(20),
   
-  // 新增篩選條件
-  stage: z.enum(['larva', 'adult']).optional(),
-  larvaStage: z.enum(['L1', 'L2', 'L3']).optional(),
-  gender: z.enum(['male', 'female']).optional(),
-  category: z.enum(['rhinoceros', 'stag']).optional(),
-  emergedFrom: z.union([z.string(), z.null()]).optional().transform(val => val === null ? undefined : val), // 羽化日期範圍開始
-  emergedTo: z.union([z.string(), z.null()]).optional().transform(val => val === null ? undefined : val),   // 羽化日期範圍結束
+  // 篩選欄位 - 處理 null 值
+  forSale: z.union([z.enum(['true', 'false']), z.null()]).optional().transform(val => val === null ? undefined : val),
+  stage: z.union([z.enum(['larva', 'adult']), z.null()]).optional().transform(val => val === null ? undefined : val),
+  larvaStage: z.union([z.enum(['L1', 'L2', 'L3']), z.null()]).optional().transform(val => val === null ? undefined : val),
+  gender: z.union([z.enum(['male', 'female']), z.null()]).optional().transform(val => val === null ? undefined : val),
+  category: z.union([z.enum(['rhinoceros', 'stag']), z.null()]).optional().transform(val => val === null ? undefined : val),
+  
+  // 日期範圍 - 處理 null 值
+  emergedFrom: z.union([z.string(), z.null()]).optional().transform(val => val === null ? undefined : val),
+  emergedTo: z.union([z.string(), z.null()]).optional().transform(val => val === null ? undefined : val),
+  
+  // 排序和分頁 - 處理 null 值並設定預設值
+  sort: z.union([z.enum(['createdAt_desc', 'createdAt_asc', 'species_asc']), z.null()]).optional().transform(val => val === null ? 'createdAt_desc' : val),
+  page: z.union([z.coerce.number().min(1), z.null()]).optional().transform(val => val === null ? 1 : val),
+  pageSize: z.union([z.coerce.number().min(1).max(100), z.null()]).optional().transform(val => val === null ? 20 : val),
 })
 
 export type SignUpInput = z.infer<typeof signUpSchema>
