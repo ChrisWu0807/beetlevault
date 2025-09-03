@@ -117,10 +117,10 @@ export async function GET(request: NextRequest) {
       where,
       beetles,
       pagination: {
-        page: query.page,
-        pageSize: query.pageSize,
+        page: query.page || 1,
+        pageSize: query.pageSize || 20,
         total,
-        totalPages: Math.ceil(total / query.pageSize),
+        totalPages: Math.ceil(total / (query.pageSize || 20)),
       },
     })
   } catch (error) {
