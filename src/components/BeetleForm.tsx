@@ -473,15 +473,21 @@ export default function BeetleForm({ initialData, onSubmit, loading = false }: B
       </div>
       
       {/* 除錯資訊 */}
-      {process.env.NODE_ENV === 'development' && (
-        <div className="mt-4 p-4 bg-gray-100 rounded text-sm">
-          <p>表單狀態：</p>
-          <p>isValid: {isValid ? 'true' : 'false'}</p>
-          <p>isDirty: {isDirty ? 'true' : 'false'}</p>
-          <p>loading: {loading ? 'true' : 'false'}</p>
-          <p>errors: {Object.keys(errors).length > 0 ? JSON.stringify(errors, null, 2) : '無錯誤'}</p>
-        </div>
-      )}
+      <div className="mt-4 p-4 bg-gray-100 rounded text-sm">
+        <p className="font-bold">表單狀態：</p>
+        <p>isValid: {isValid ? '✅ true' : '❌ false'}</p>
+        <p>isDirty: {isDirty ? '✅ true' : '❌ false'}</p>
+        <p>loading: {loading ? '⏳ true' : '✅ false'}</p>
+        <p>按鈕狀態: {loading || !isValid ? '🚫 禁用' : '✅ 可點擊'}</p>
+        {Object.keys(errors).length > 0 && (
+          <div className="mt-2">
+            <p className="font-bold text-red-600">驗證錯誤：</p>
+            <pre className="text-xs bg-red-50 p-2 rounded overflow-auto">
+              {JSON.stringify(errors, null, 2)}
+            </pre>
+          </div>
+        )}
+      </div>
     </form>
   )
 }
