@@ -302,11 +302,28 @@ export default function BeetleForm({ initialData, onSubmit, loading = false }: B
         )}
       </div>
 
-      {/* 羽化日期 - 只有成蟲和卵期顯示 */}
-      {(stage === 'adult' || stage === 'egg') && (
+      {/* 成蟲：羽化日期 */}
+      {stage === 'adult' && (
         <div>
           <label htmlFor="emergedAt" className="block text-sm font-medium text-gray-700">
             羽化日期（選填）
+          </label>
+          <input
+            {...register('emergedAt')}
+            type="date"
+            className="input-field mt-1"
+          />
+          {errors.emergedAt && (
+            <p className="mt-1 text-sm text-red-600">{errors.emergedAt.message}</p>
+          )}
+        </div>
+      )}
+
+      {/* 卵期：出生日期 */}
+      {stage === 'egg' && (
+        <div>
+          <label htmlFor="emergedAt" className="block text-sm font-medium text-gray-700">
+            出生日期（選填）
           </label>
           <input
             {...register('emergedAt')}
