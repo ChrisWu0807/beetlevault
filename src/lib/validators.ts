@@ -53,8 +53,8 @@ export const beetleSchema = z.object({
   }
   return true
 }, {
-  message: '幼蟲必須選擇階段，成蟲必須選擇性別',
-  path: ['stage']
+  message: '請選擇對應的階段或性別',
+  path: ['larvaStage']
 })
 
 export const publicBeetleQuerySchema = z.object({
