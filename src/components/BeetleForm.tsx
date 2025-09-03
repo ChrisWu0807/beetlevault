@@ -66,11 +66,18 @@ export default function BeetleForm({ initialData, onSubmit, loading = false }: B
       if (response.ok) {
         setImageData(result.imageData)
         setValue('imageData', result.imageData)
+        console.log('圖片上傳成功')
       } else {
+        console.error('上傳失敗:', result.error?.message)
         alert(result.error?.message || '上傳失敗')
+        // 清空檔案輸入
+        event.target.value = ''
       }
     } catch (error) {
+      console.error('上傳錯誤:', error)
       alert('上傳失敗')
+      // 清空檔案輸入
+      event.target.value = ''
     } finally {
       setUploading(false)
     }
