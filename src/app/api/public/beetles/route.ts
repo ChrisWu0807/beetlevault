@@ -96,8 +96,8 @@ export async function GET(request: NextRequest) {
         },
       },
       orderBy,
-      skip: (query.page - 1) * query.pageSize,
-      take: query.pageSize,
+      skip: ((query.page || 1) - 1) * (query.pageSize || 20),
+      take: query.pageSize || 20,
     })
 
     const total = await prisma.beetle.count({ where })
@@ -105,10 +105,10 @@ export async function GET(request: NextRequest) {
     return Response.json({
       beetles,
       pagination: {
-        page: query.page,
-        pageSize: query.pageSize,
+        page: query.page || 1,
+        pageSize: query.pageSize || 20,
         total,
-        totalPages: Math.ceil(total / query.pageSize),
+        totalPages: Math.ceil(total / (query.pageSize || 20)),
       },
     })
   } catch (error) {
