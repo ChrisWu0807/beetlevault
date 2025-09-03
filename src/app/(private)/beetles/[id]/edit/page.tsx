@@ -20,6 +20,11 @@ interface Beetle {
   larvaStage?: string
   gender?: string
   category: string
+  size?: string
+  generation?: string
+  feedingDate?: string
+  weight?: number
+  records?: any[]
   createdAt: string
   updatedAt: string
   owner: {
@@ -135,9 +140,19 @@ export default function EditBeetlePage() {
               emergedAt: beetle.emergedAt ? beetle.emergedAt : undefined,
               notes: beetle.notes || '',
               imageUrl: beetle.imageUrl || '',
+              imageData: beetle.imageData || '',
               isPublished: beetle.isPublished,
               isForSale: beetle.isForSale,
               price: beetle.price,
+              stage: beetle.stage,
+              larvaStage: beetle.larvaStage,
+              gender: beetle.gender,
+              category: beetle.category,
+              size: (beetle as any).size || '',
+              generation: (beetle as any).generation,
+              feedingDate: (beetle as any).feedingDate,
+              weight: (beetle as any).weight,
+              records: (beetle as any).records || [],
             }}
             onSubmit={handleSubmit}
             loading={loading}
