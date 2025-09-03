@@ -24,6 +24,7 @@ export default function BeetleForm({ initialData, onSubmit, loading = false }: B
     formState: { errors, isValid, isDirty },
   } = useForm<BeetleInput>({
     resolver: zodResolver(beetleSchema),
+    mode: 'onChange', // 即時驗證
     defaultValues: {
       species: initialData?.species || '',
       lineage: initialData?.lineage || '',
