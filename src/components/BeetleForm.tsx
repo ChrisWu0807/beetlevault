@@ -21,7 +21,7 @@ export default function BeetleForm({ initialData, onSubmit, loading = false }: B
     setValue,
     watch,
     control,
-    formState: { errors },
+    formState: { errors, isValid, isDirty },
   } = useForm<BeetleInput>({
     resolver: zodResolver(beetleSchema),
     defaultValues: {
@@ -465,12 +465,23 @@ export default function BeetleForm({ initialData, onSubmit, loading = false }: B
       <div className="flex gap-4">
         <button
           type="submit"
-          disabled={loading}
+          disabled={loading || !isValid}
           className="btn-primary flex-1"
         >
           {loading ? '儲存中...' : '儲存'}
         </button>
       </div>
+      
+      {/* 除錯資訊 */}
+      {process.env.NODE_ENV === 'development' && (
+        <div className="mt-4 p-4 bg-gray-100 rounded text-sm">
+          <p>表單狀態：</p>
+          <p>isValid: {isValid ? 'true' : 'false'}</p>
+          <p>isDirty: {isDirty ? 'true' : 'false'}</p>
+          <p>loading: {loading ? 'true' : 'false'}</p>
+          <p>errors: {Object.keys(errors).length > 0 ? JSON.stringify(errors, null, 2) : '無錯誤'}</p>
+        </div>
+      )}
     </form>
   )
 }
