@@ -52,6 +52,8 @@ export async function POST(request: NextRequest) {
 
 export async function GET(request: NextRequest) {
   try {
+    const startTime = Date.now()
+    
     const user = await getSessionUser(request)
     if (!user) {
       return Response.json(
@@ -64,31 +66,36 @@ export async function GET(request: NextRequest) {
     const page = parseInt(searchParams.get('page') || '1')
     const pageSize = parseInt(searchParams.get('pageSize') || '20')
 
-    const beetles = await prisma.beetle.findMany({
-      where: {
-        ownerId: user.id,
-      },
-      include: {
-        owner: {
-          select: {
-            id: true,
-            email: true,
-            name: true,
+    // 並行執行查詢以提高性能
+    const [beetles, total] = await Promise.all([
+      prisma.beetle.findMany({
+        where: {
+          ownerId: user.id,
+        },
+        include: {
+          owner: {
+            select: {
+              id: true,
+              email: true,
+              name: true,
+            },
           },
         },
-      },
-      orderBy: {
-        createdAt: 'desc',
-      },
-      skip: (page - 1) * pageSize,
-      take: pageSize,
-    })
+        orderBy: {
+          createdAt: 'desc',
+        },
+        skip: (page - 1) * pageSize,
+        take: pageSize,
+      }),
+      prisma.beetle.count({
+        where: {
+          ownerId: user.id,
+        },
+      })
+    ])
 
-    const total = await prisma.beetle.count({
-      where: {
-        ownerId: user.id,
-      },
-    })
+    const endTime = Date.now()
+    console.log(`Beetles API 查詢時間: ${endTime - startTime}ms`)
 
     return Response.json({
       beetles,
