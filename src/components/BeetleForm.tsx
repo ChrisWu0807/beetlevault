@@ -209,6 +209,31 @@ export default function BeetleForm({ initialData, onSubmit, loading = false }: B
         </div>
       )}
 
+      {/* 累代欄位 - 所有階段都可以選擇 */}
+      <div>
+        <label htmlFor="generation" className="block text-sm font-medium text-gray-700">
+          累代（選填）
+        </label>
+        <select
+          {...register('generation')}
+          className="input-field mt-1"
+        >
+          <option value="">請選擇累代</option>
+          <option value="cbf1">CBF1</option>
+          <option value="cbf2">CBF2</option>
+          <option value="cbf3">CBF3</option>
+          <option value="cbf4">CBF4</option>
+          <option value="cbf5">CBF5</option>
+          <option value="cbf5+">CBF5+</option>
+          <option value="wd1">WD1</option>
+          <option value="wd2">WD2</option>
+          <option value="unknown">不明</option>
+        </select>
+        {errors.generation && (
+          <p className="mt-1 text-sm text-red-600">{errors.generation.message}</p>
+        )}
+      </div>
+
       {/* 成蟲專用欄位 */}
       {stage === 'adult' && (
         <>
@@ -224,30 +249,6 @@ export default function BeetleForm({ initialData, onSubmit, loading = false }: B
             />
             {errors.size && (
               <p className="mt-1 text-sm text-red-600">{errors.size.message}</p>
-            )}
-          </div>
-
-          <div>
-            <label htmlFor="generation" className="block text-sm font-medium text-gray-700">
-              累代（選填）
-            </label>
-            <select
-              {...register('generation')}
-              className="input-field mt-1"
-            >
-              <option value="">請選擇累代</option>
-              <option value="cbf1">CBF1</option>
-              <option value="cbf2">CBF2</option>
-              <option value="cbf3">CBF3</option>
-              <option value="cbf4">CBF4</option>
-              <option value="cbf5">CBF5</option>
-              <option value="cbf5+">CBF5+</option>
-              <option value="wd1">WD1</option>
-              <option value="wd2">WD2</option>
-              <option value="unknown">不明</option>
-            </select>
-            {errors.generation && (
-              <p className="mt-1 text-sm text-red-600">{errors.generation.message}</p>
             )}
           </div>
 
