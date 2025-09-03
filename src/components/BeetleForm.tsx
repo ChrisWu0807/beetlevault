@@ -525,6 +525,16 @@ export default function BeetleForm({ initialData, onSubmit, loading = false }: B
             ))}
           </div>
         </div>
+        
+        {/* 顯示表單驗證狀態 */}
+        <div className="mt-2">
+          <p className="font-bold">驗證狀態：</p>
+          <div className="text-xs bg-yellow-50 p-2 rounded">
+            <p>表單是否有效: {isValid ? '✅ 是' : '❌ 否'}</p>
+            <p>表單是否有修改: {isDirty ? '✅ 是' : '❌ 否'}</p>
+            <p>錯誤數量: {Object.keys(errors).length}</p>
+          </div>
+        </div>
       </div>
     </form>
   )
