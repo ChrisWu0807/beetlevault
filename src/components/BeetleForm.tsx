@@ -78,7 +78,7 @@ export default function BeetleForm({ initialData, onSubmit, loading = false }: B
 
   // 紀錄檔處理函數
   const addRecord = () => {
-    setRecords([...records, { stage: '', date: '', weight: undefined }])
+    setRecords([...records, { stage: undefined, date: '', weight: undefined }])
   }
 
   const removeRecord = (index: number) => {
